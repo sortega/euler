@@ -2,11 +2,11 @@ package util
 
 import scala.annotation.tailrec
 
-object Primes {
+object NumberTheory {
 
-  lazy val stream: Stream[Int] = 2 #:: Stream.from(3).filter { n =>
+  lazy val primes: Stream[Int] = 2 #:: Stream.from(3).filter { n =>
     val bound = Math.sqrt(n).floor.toInt
-    stream.takeWhile(_ < bound).forall(p => n % p != 0)
+    primes.takeWhile(_ < bound).forall(p => n % p != 0)
   }
 
   def factors(n: Long): Vector[Int] = {
@@ -18,6 +18,14 @@ object Primes {
         aux(primes, remaining / primes.head, factors :+ primes.head)
       else aux(primes.tail, remaining, factors)
 
-    aux(stream, n, Vector.empty)
+    aux(primes, n, Vector.empty)
   }
+
+  @tailrec
+  def gcd(a: Int, b: Int): Int =
+    if (a > b) gcd(b, a)
+    else if (b % a == 0) a
+    else gcd(b, b % a)
+
+  def mcm(a: Int, b: Int): Int = a * b / gcd(a, b)
 }
